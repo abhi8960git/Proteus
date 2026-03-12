@@ -1,6 +1,3 @@
-// Prisma schema for OMNI-AGENT
-// SQLite — no enum support, using String with defaults
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,7 +7,6 @@ datasource db {
   url      = "file:./agent.db"
 }
 
-// Agent registration and profile info
 model AgentConfig {
   id            String   @id @default(cuid())
   agentId       String?  @unique
@@ -20,20 +16,17 @@ model AgentConfig {
   bio           String   @default("Multi-skill autonomous AI agent")
   verified      Boolean  @default(false)
   verifyTweet   String?
-  skills        String   @default("[]") // JSON array as string
+  skills        String   @default("[]")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
-// Every job seen on Seedstr
-// status: SEEN | ACCEPTED | DECLINED | COMPLETED | FAILED
-// jobType: FRONTEND | CONTENT | CODE_REVIEW | RESEARCH | UNKNOWN
 model Job {
-  id             String      @id // Seedstr job ID
+  id             String      @id
   title          String
   description    String
   budget         Float
-  requiredSkills String      @default("[]") // JSON array as string
+  requiredSkills String      @default("[]")
   deadline       DateTime?
   status         String      @default("SEEN")
   jobType        String      @default("UNKNOWN")
@@ -42,12 +35,9 @@ model Job {
   submission     Submission?
 }
 
-// What we submitted for each job
-// status: SUBMITTED | ACCEPTED | REJECTED
 model Submission {
   id           String   @id @default(cuid())
   jobId        String   @unique
-  job          Job      @relation(fields: [jobId], references: [id])
   responseText String
   fileUrl      String?
   zipPath      String?
@@ -55,14 +45,13 @@ model Submission {
   errorMsg     String?
   submittedAt  DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  job          Job      @relation(fields: [jobId], references: [id])
 }
 
-// Activity logs
-// level: INFO | SUCCESS | WARN | ERROR
 model Log {
   id        String   @id @default(cuid())
   level     String   @default("INFO")
   message   String
-  data      String?  // JSON string for extra context
+  data      String?
   createdAt DateTime @default(now())
 }

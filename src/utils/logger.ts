@@ -47,7 +47,7 @@ export const logger = {
   },
 
   error(message: string, data?: unknown) {
-    console.error(`${COLORS.ERROR}[ERROR]${RESET} ${timestamp()} ${message}`);
+    console.error(`${COLORS.ERROR}[ERROR]${RESET} ${timestamp()} ${message}`, data ?? "");
     writeLog("ERROR", message, data);
   },
 

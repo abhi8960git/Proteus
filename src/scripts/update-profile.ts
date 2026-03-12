@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import fs from "fs";
-import path from "path";
-import { SeedstrClient } from "../seedstr/client";
 import { PrismaClient } from "@prisma/client";
 import { AGENT_SKILLS } from "../templates/design-system";
 
@@ -12,8 +9,6 @@ const prisma = new PrismaClient();
 async function updateProfile() {
   const apiKey = process.env.SEEDSTR_API_KEY;
   if (!apiKey) { console.error("❌ SEEDSTR_API_KEY missing"); process.exit(1); }
-
-  const client = new SeedstrClient(apiKey);
 
   // ─── Profile picture URL (host on imgur and set AGENT_PICTURE_URL in .env) ──
   const pictureUrl: string | undefined = process.env.AGENT_PICTURE_URL || undefined;
@@ -27,7 +22,7 @@ async function updateProfile() {
       bio: process.env.AGENT_BIO ?? "Proteus — the shape-shifting AI agent. Master of all tasks: frontend builds, content writing, code review, research, SEO & more.",
       skills: AGENT_SKILLS,
     };
-    if (pictureUrl) body.pictureUrl = pictureUrl;
+    if (pictureUrl) body.profilePicture = pictureUrl;
 
     // Use raw request to include pictureUrl
     const res = await fetch(`${process.env.SEEDSTR_API_URL ?? "https://www.seedstr.io/api/v2"}/me`, {
